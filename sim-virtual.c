@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     int num_paginas = tam_mem_fisica / tam_pagina; 
     int contador = 0;
+    int s = 13;
 
     clock_t tempo_ini = clock(); 
 
@@ -40,11 +41,30 @@ int main(int argc, char *argv[])
         printf("algoritmo de Substituição de Páginas %s é inválido\n", tipo_algo);
         exit(1);
     }
+
+    if(tam_pagina == 8)
+    {
+        s += 0;
+    }
+    else if(tam_pagina == 16)
+    {
+        s += 1;
+    }
+    else if(tam_pagina == 32)
+    {
+        s += 2;
+    }
+    else
+    {
+        printf("Tamanho de Página %d é inválido\n", tam_pagina);
+        exit(1);
+    }
     
     FILE *pnt_arquivo;
     char buff[N];
     char rw;
     unsigned end;
+    int end_pagina;
 
     pnt_arquivo = fopen(nome_arquivo, "r");
     if(pnt_arquivo == NULL)
@@ -62,8 +82,7 @@ int main(int argc, char *argv[])
 
     while(fscanf(pnt_arquivo, "%x %c\n", &end, &rw) != -1)
     {
-        printf("%d: %x %c\n", i, end, rw);
-
+        end_pagina = end >> s;
         if(strcmp(&rw, "W") == 0)
         {
             // write
