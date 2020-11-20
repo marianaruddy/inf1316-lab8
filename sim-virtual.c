@@ -10,6 +10,13 @@
 //  Mariana Medeiros Ruddy Santos   - 1611397
 //  Camilla Santos Celles           - XXXXXXX
 
+// struct pagina {
+// 	char endereco;
+//  char flag; // M (pagina modificada) ou R (pagina refernciada)
+//  int ultimo_acesso;
+// 	struct pagina *prox; // precisa desse campo?	
+// };
+
 int main(int argc, char *argv[])
 {
     // parametros
@@ -21,8 +28,6 @@ int main(int argc, char *argv[])
     int num_paginas = tam_mem_fisica / tam_pagina; 
     int contador = 0;
     int s = 13;
-
-    clock_t tempo_ini = clock(); 
 
     if(strcmp(tipo_algo, "LRU") == 0)
     {
@@ -65,6 +70,8 @@ int main(int argc, char *argv[])
     char rw;
     unsigned end;
     int end_pagina;
+    int pags_escritas = 0;
+    int pags_faltantes = 0;
 
     pnt_arquivo = fopen(nome_arquivo, "r");
     if(pnt_arquivo == NULL)
@@ -77,11 +84,10 @@ int main(int argc, char *argv[])
     printf("Tamanho da memoria fisica: %d\n", tam_mem_fisica);
     printf("Tamanho das páginas: %d\n", tam_pagina);
     printf("Alg de substituição: %s\n", tipo_algo);
-    printf("Numero de Faltas de Páginas: \n");
-    printf("Numero de Paginas escritas: \n");
 
     while(fscanf(pnt_arquivo, "%x %c\n", &end, &rw) != -1)
     {
+        // printf("%d: %x %c\n", i, end, rw);
         end_pagina = end >> s;
         if(strcmp(&rw, "W") == 0)
         {
@@ -96,10 +102,10 @@ int main(int argc, char *argv[])
     }
 
     // finalizacao do programa
+    printf("Numero de Faltas de Páginas: %d\n", pags_faltantes);
+    printf("Numero de Paginas escritas: %d\n", pags_escritas);
     fclose(pnt_arquivo);
-    clock_t tempo_fim = clock(); 
-    printf("a execução demorou %f milisegundos\n", (tempo_fim - tempo_ini) / (double)CLOCKS_PER_SEC);
-    printf("a execução demorou %d de unidades de tempo\n", contador);   // nao entendi muito bem qual dessas formas é pra contar o tempo
+    printf("a execução demorou %d de unidades de tempo\n", contador);
     return 0;
 };
 
