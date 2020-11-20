@@ -10,12 +10,7 @@
 //  Mariana Medeiros Ruddy Santos   - 1611397
 //  Camilla Santos Celles           - XXXXXXX
 
-// struct pagina {
-// 	char endereco;
-//  char flag; // M (pagina modificada) ou R (pagina refernciada)
-//  int ultimo_acesso;
-// 	struct pagina *prox; // precisa desse campo?	
-// };
+char *modo_debug = " ";
 
 int main(int argc, char *argv[])
 {
@@ -79,6 +74,8 @@ int main(int argc, char *argv[])
         printf("Erro ao abrir arquivo %s\n", nome_arquivo);
         exit(1);
     }
+
+    if(strcmp(modo_debug, "debug")== 0 || strcmp(modo_debug, "-D")== 0) printf("\n-----MODO DEBIG ATIVADO----\n");
     printf("\nExecutando o simulador...\n");
     printf("Arquivo de entrada: %s\n", nome_arquivo);
     printf("Tamanho da memoria fisica: %d\n", tam_mem_fisica);
