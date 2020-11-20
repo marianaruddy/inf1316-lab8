@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h> 
 
 #define N 20
 
@@ -18,7 +19,9 @@ int main(int argc, char *argv[])
     int tam_mem_fisica = atoi(argv[4]);
 
     int num_paginas = tam_mem_fisica / tam_pagina; 
-    int i = 0;
+    int contador = 0;
+
+    clock_t tempo_ini = clock(); 
 
     if(strcmp(tipo_algo, "LRU") == 0)
     {
@@ -70,11 +73,14 @@ int main(int argc, char *argv[])
         {
             // read
         }
-        i++;
+        contador++;
     }
 
     // finalizacao do programa
     fclose(pnt_arquivo);
+    clock_t tempo_fim = clock(); 
+    printf("a execução demorou %f milisegundos\n", (tempo_fim - tempo_ini) / (double)CLOCKS_PER_SEC);
+    printf("a execução demorou %d de unidades de tempo\n", contador);   // nao entendi muito bem qual dessas formas é pra contar o tempo
     return 0;
 };
 
