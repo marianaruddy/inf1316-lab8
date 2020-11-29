@@ -13,7 +13,7 @@ struct pagina {
   int ultimo_acesso;
 }; typedef struct pagina Pagina;
 
-Pagina* emQuadro[500]; // armazena vetor de paginas que estao ja mapeadas 
+Pagina** emQuadro; // armazena vetor de paginas que estao ja mapeadas 
 
 char* algoritmo;
 FILE *arquivo_log;
@@ -78,32 +78,32 @@ int descartaNRU() {
 
 int descartaNOVO() {
   // iremos "olhar para o futuro" e ver qual das paginas em quadro esta mais 
-  // longe de ser usada de novo e substituir essa (entre as 10 proximas)
+  // longe de ser usada de novo e substituir essa
 
   // armazenando posicao do cursor na leitura do arquivo pela main para depois retornar a esse ponto
   fpos_t cursor;
   fgetpos(arquivo_log, &cursor);
 
-  char flags[500]; for(int i=0; i<num_paginas; i++) flags[i] = 0;
+  char flags[100000]; for(int i=0; i<num_paginas; i++) flags[i] = 0;
   unsigned addrs; char rw;
-  int count = 0;
-  int count_linhas = 0;
-  while (count_linhas < 10 && fscanf(arquivo_log, "%x %c\n", &addrs, &rw) != -1) {
+  int count_encontradas = 0;
+  while (count_encontradas<num_paginas-1 && fscanf(arquivo_log, "%x %c\n", &addrs, &rw)!=-1) {
     int end_pagina = addrs >> s;
-    for (int i=0; i<num_paginas && count<num_paginas-1; i++) {
+    int i;
+    for (i=0; i<num_paginas; i++) {
       if (emQuadro[i]->endereco == end_pagina) { // uma das paginas em quadro foi encontrada "no futuro"
         if (!flags[i]) {
           flags[i] = 1;
-          count++;
+          count_encontradas++;
         }
+        break;
       }
     }
-    count_linhas++;
   }
-  int ind;
+  int ind = -1;
   for (int i=0; i<num_paginas; i++) {
     if (!flags[i]) {
-      ind = i; // vamos retornar a pagina que nao foi encontrada no futuro proximo (flag = 0)
+      ind = i;
       break;
     }
   }
@@ -149,7 +149,6 @@ void paginaLida(int end, char rw) {
   }
 }
 
-
 int main(int argc, char *argv[]) {
   // lendo parametros da chamada do simulador
   algoritmo = argv[1];
@@ -157,8 +156,9 @@ int main(int argc, char *argv[]) {
   int tam_pagina = atoi(argv[3]);
   int tam_mem_fisica = atoi(argv[4]);
 
-  num_paginas = tam_mem_fisica*1000 / tam_pagina;
-  printf("%d %d %d\n", num_paginas, tam_mem_fisica, tam_pagina);
+  num_paginas = tam_mem_fisica*1024 / tam_pagina;
+
+  emQuadro = (Pagina**)malloc(num_paginas*sizeof(Pagina*));
 
   s = 13;
   if(tam_pagina == 8) 
@@ -193,4 +193,9 @@ int main(int argc, char *argv[]) {
 
   printf("Numero de Faltas de Páginas: %d\n", page_faults);
   printf("Numero de Paginas escritas: %d\n", paginas_sujas);
+
+  for (int i=0; i<num_paginas_usadas; i++) {
+    free(emQuadro[i]);
+  }
+  free(emQuadro);
 }
