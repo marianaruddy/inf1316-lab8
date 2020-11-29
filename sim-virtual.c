@@ -157,7 +157,8 @@ int main(int argc, char *argv[]) {
   int tam_pagina = atoi(argv[3]);
   int tam_mem_fisica = atoi(argv[4]);
 
-  num_paginas = tam_mem_fisica / tam_pagina;
+  num_paginas = tam_mem_fisica*1000 / tam_pagina;
+  printf("%d %d %d\n", num_paginas, tam_mem_fisica, tam_pagina);
 
   s = 13;
   if(tam_pagina == 8) 
