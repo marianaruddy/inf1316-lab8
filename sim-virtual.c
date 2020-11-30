@@ -149,6 +149,12 @@ void paginaLida(int end, char rw) {
   }
 }
 
+void clockTick() { // zera as flags R das paginas em quadro
+  for (int i=0; i<num_paginas_usadas; i++) {
+    emQuadro[i]->R = 0;
+  }
+}
+
 int main(int argc, char *argv[]) {
   // lendo parametros da chamada do simulador
   algoritmo = argv[1];
@@ -189,6 +195,7 @@ int main(int argc, char *argv[]) {
     int end_pagina = addrs >> s;
     paginaLida(end_pagina, rw);
     conta_tempo++;
+    if (conta_tempo % 128 == 0) clockTick();
   }
 
   printf("Numero de Faltas de Páginas: %d\n", page_faults);
